@@ -1,0 +1,157 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[scaled]{helvet}
+\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
+\usepackage[T1]{fontenc}
+
+\usepackage{mathtools}
+\usepackage[helvet]{sfmath} 
+
+\usepackage[top=0cm, bottom=0.5cm, outer=1cm, inner=1cm]{geometry}
+\frenchspacing                     		 						% better looking spacing
+
+% Call packages we'll need
+\usepackage[english]{babel}         							% english
+\usepackage{graphicx}               							% images
+\usepackage{amssymb,amsmath}    							% math
+\usepackage{multicol}               								% three-column layout
+%\usepackage{url}                   	 							% clickable links
+\usepackage{marvosym}              	 						% symbols
+\usepackage{wrapfig}              	   							% wrapping text around figures
+\usepackage[T1]{fontenc}            							% font encoding
+\usepackage{charter}                								% Charter font for main content
+\usepackage{blindtext}              								% dummy text
+\usepackage{datetime}               							% custom date
+\newdateformat{mydate}{\monthname[\THEMONTH] \THEYEAR}
+%\usepackage[pdfpagemode=FullScreen, colorlinks=false]{hyperref} % links and pdf behaviour
+\usepackage{colortbl}
+\usepackage{xcolor}
+\newcolumntype{L}{@{}>{\kern\tabcolsep}l<{\kern\tabcolsep}}		%setting for table
+\usepackage{widetable}									% for wide tables..
+ \usepackage{multirow}
+\usepackage{pgffor}
+\usepackage{rotating}
+\usepackage{forloop}
+\usepackage{tabularx} 
+\usepackage[hang]{footmisc}
+\usepackage{footnote} 
+\makesavenoteenv{tabular}
+\usepackage{grffile}
+\newcommand{\rgbcolor}{206,250,201}
+\renewcommand\thefootnote{\textcolor{gray}{\arabic{footnote}}}
+
+%%%%%%%%%%%%
+%input statistic values:
+	\newcommand{\directorytolatex}{LATEX}
+
+	%value sto change:
+	\newcommand{\directory}{ValueForDirectory}
+	\newcommand{\NumberOfSamples}{ValueForNumberOfSamples}
+	\newcommand{\Samples}{ValueForSamples}
+	\newcommand{\trans}{ValueForTrans}
+	\newcommand{\dbsnp}{ValueForDBSNP}
+	\newcommand{\var}{ValueForVariance}
+	\newcommand{\sds}{ValueForSDS}
+	\newcommand{\syntrans}{ValueForSynTrans}
+	\newcommand{\MDSPlot}{ValueForMDSPlot}
+	\newcommand{\SDSPlot}{ValueForSDSPlot}
+	\newcommand{\HetHom}{ValueForHetHomRatio}
+
+%%% ---------------
+%%% BEGIN DOCUMENT
+%%% ---------------
+\begin{document}
+	\pagestyle{empty}									% no page numbering
+
+%Genetalk header:
+	\mbox{}\hspace{-2cm}\includegraphics[width=1.2\textwidth]{\directorytolatex/GeneTalkHeader.pdf}
+	\vspace{0cm}
+	
+%%%%%%%%%%%%
+%make title and date:
+	%\title{Quality Parameters for Exome Samples}
+	%\maketitle
+	
+	\Large
+	\noindent
+	\textbf{Quality Parameters for Exome Samples:}
+		
+%%%%%%%%%%%%
+%input statistic table:
+	
+	%create table:
+	\begin{savenotes}
+	\footnotesize
+	\begin{table}[h!]
+		\begin{widetable}{\columnwidth}{|l|l|>{\columncolor[gray]{0.97}}l|}  \arrayrulecolor{darkgray}\hline
+			&& Reference Range \textcolor{gray}{\footnotesize (I)}\\\arrayrulecolor{darkgray}\hline
+			& \multirow{2}*{
+				\begin{tabular} {*{\NumberOfSamples}{p{18mm}}}
+				\Samples\\
+				\end{tabular}
+			}& \multirow{2}*{}\\
+			&&\multirow{-2}{*}{$ \left[ \mu -2sd; \mu + 2sd \right]$}\\\arrayrulecolor{darkgray}\hline
+			ti/tv ratio \textcolor{gray}{\footnotesize (II)} & \multirow{1}*{
+				\begin{tabular} {*{\NumberOfSamples}{p{18mm}}}
+								\trans\\
+							\end{tabular}
+						}&{$ \left[ 2.7 ;  3.6 \right]$}\\
+			nonsyn/syn ratio \textcolor{gray}{\footnotesize (III)} & \multirow{1}*{
+							\begin{tabular} {*{\NumberOfSamples}{p{18mm}}}
+								\syntrans\\
+							\end{tabular}
+						}&{$ \left[0.8; 1.0 \right]$}\\
+			het/hom ratio \textcolor{gray}{\footnotesize (IV)} & \multirow{1}*{
+							\begin{tabular} {*{\NumberOfSamples}{p{18mm}}}
+								\HetHom\\
+							\end{tabular}
+						}&{$ \left[1.3; 2.0 \right]$}\\
+			\% in dbSNP138   & \multirow{1}*{
+				\begin{tabular} {*{\NumberOfSamples}{p{18mm}}}
+								\dbsnp\\
+							\end{tabular}
+						}&{$ \left[ 0.9;1.0 \right]$}\\
+			var(het) \textcolor{gray}{\footnotesize (V)}   & \multirow{1}*{
+				\begin{tabular} {*{\NumberOfSamples}{p{18mm}}}
+								\var\\
+							\end{tabular}
+						}&{$ \left[ 0.016; 0.023 \right]$}\\
+			SDS \textcolor{gray}{\footnotesize (VI)}  & \multirow{1}*{
+							\begin{tabular} {*{\NumberOfSamples}{p{18mm}}}
+								\sds\\
+							\end{tabular}
+						}&{$ \left[0.0; 0.6 \right]$}\\
+			 \arrayrulecolor{darkgray}\hline
+		\end{widetable}
+	\end{table}
+	\noindent
+	\input{\directorytolatex/legend3.txt}
+	
+%%%%%%%%%%%%
+%input figures: MDS plot and SDS curve:
+	\vspace{0.15cm}
+	\hspace{-1.1cm}
+	\begin{minipage}{0.5\textwidth}
+		  \includegraphics[width=1\textwidth]{\MDSPlot}
+	\end{minipage}
+	\hfill
+	\hspace{0.8cm}
+	\begin{minipage}{0.5\textwidth}
+  		\includegraphics[width=1\textwidth]{\SDSPlot}
+	\end{minipage}
+	
+%%%%%%%%%%%%
+%input legends for  MDS plot and SDS curve:
+	\footnotesize
+	\vspace{0.3cm}
+	\hspace{-0.55cm}
+	\begin{minipage}[h]{0.45\textwidth}
+		\vspace{-2.3cm}
+		\input{\directorytolatex/legend1.txt}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.45\textwidth}
+		\input{\directorytolatex/legend2.txt}
+	\end{minipage}
+\end{savenotes}
+\end{document} 

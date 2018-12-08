@@ -1,0 +1,21 @@
+\textcolor{gray}{
+Figure2: Estimation of genotyping accuracy from the 
+standardized distance to the reference set: Based on the 
+original 1000 genomes data, we simulated different accuracy 
+groups to derive a standardized distance for different 
+genotyping accuracies. The intersection of the distance of your 
+vcf file with the reference curve indicates the error rate. A 
+genotyping accuracy below 0.0001 is regarded as good quality. 
+For an exome target region of 30MB this translates to less than 
+3000 genotyping errors. For a usual individual we expect 
+around 30,000 true variants per exome: Thus an accuracy of 
+below 0.0001 means a positive predictive value above 90%. 
+When the estimated accuracy of your data set is above 0.001, 
+make sure first, that the enrichment technique that you used, 
+really targets at least the consensus exome of the 1000 
+genomes project (e.g. SureSelect Human All Exon Kit, 
+NimbleGen SeqCep EZ, Illumina TruSeq Exome Enrichment Kit) 
+or that you uploaded a whole genome vcf file. If so and your 
+accuracy is still poor you might discuss with GeneTalk's 
+technical support, how to improve the quality of your NGS data.
+}

@@ -8,7 +8,7 @@
 
 Run 'java -jar VCF2Sim.jar' to the all parameters:
 
-usage: VCF2Sim.jar
+Usage: VCF2Sim.jar
  -d,--dir <arg>      Directory to vcf files
  -g,--gfv <arg>      Name of optional GFV file. default build on 1KGP
                      ('/VCF2Sim/data/GFV_consensus.txt')

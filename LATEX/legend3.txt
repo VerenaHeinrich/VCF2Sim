@@ -1,0 +1,12 @@
+\noindent
+\hspace{-0.29cm}
+\begin{tabular}{l l}
+%\textcolor{gray}{
+	\textcolor{gray}{I}&\textcolor{gray}{The reference range is based on the mean $\mu$ and standard deviation $sd$ computed from 350 high quality exomes of the Charit\a`{e} University Hospital, Berlin.}\\	\textcolor{gray}{II}&\textcolor{gray}{Describes the transition to transversion ratio}\footnote{\textcolor{gray}{Bainbridge MN et al. Targeted enrichment beyond the consensus coding DNA sequence exome reveals exons with higher variant densities. Genome Biol 2011;12:R68}}\\
+	\textcolor{gray}{III}& \textcolor{gray}{Describes the nonsynonymous to synonymous ratio}\footnote{\textcolor{gray}{An integrated map of genetic variation from 1,092 human genomes. Nature 2012;491:56-65.}}\\
+	\textcolor{gray}{IV}& \textcolor{gray}{Describes the heterozygous to homozygous ratio (non reference)}\footnote{\textcolor{gray}{Tennessen JA et al. Evolution and Functional Impact of Rare Coding Variation from Deep Sequencing of Human Exomes. Science 2012;337:64.}}\\
+	\textcolor{gray}{V} &\textcolor{gray}{The variance of the alternate allele at heterozygous sites. A value above the reference range points to amplifications artifacts}\footnote{\textcolor{gray}{Heinrich V et al. The allele distribution in next-generation sequencing data sets is accurately described as the result of a stochastic branching process. Nucleic Acids Res. 2012;40(6):2426-31}}\\
+	\textcolor{gray}{VI} &\textcolor{gray}{The standardized dissimilarity score. A value above the reference range indicates low accuracy}\footnote{\textcolor{gray}{Heinrich V et al. Estimating exome genotyping accuracy by comparing to data from large scale sequencing projects. Genome Med. 2013;5(7):69}}.\\
+		&\textcolor{gray}{Note, if there is no good reference background population for your sample in the 1000 genomes data, this will affect the distance and thus the SDS.}
+%}
+\end{tabular}
