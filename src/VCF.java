@@ -379,8 +379,8 @@ public class VCF{
 		String[] format = null;
 		
 		line.put(CHR, new ArrayList<String>());
-		line.put(POS, new ArrayList<String>());
 		line.put(REF, new ArrayList<String>());
+		line.put(POS, new ArrayList<String>());
 		line.put(ALT, new ArrayList<String>());
 		line.put(GENOTYPE, new ArrayList<String>());
 		
@@ -497,12 +497,14 @@ public class VCF{
 		
 		Boolean check=false;
 		// go through all regions in region:
-		for(ArrayList<Integer> this_region:region.get(chr)){
-			if (this_region.get(0) <= pos & this_region.get(1) >= pos){
-				check = true;
-				break;
+		if(region.containsKey(chr)){
+			for(ArrayList<Integer> this_region:region.get(chr)){
+				if (this_region.get(0) <= pos & this_region.get(1) >= pos){
+					check = true;
+					break;
+				}
+	
 			}
-
 		}
 		return check;
 	}
