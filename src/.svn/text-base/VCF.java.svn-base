@@ -27,8 +27,7 @@ public class VCF{
 								String dir,
 								HashMap<String,ArrayList<String>> info,
 								HashMap<String, ArrayList<String>> genotypes,
-								HashMap<String, String> reference_genotype,
-								HashMap<String, ArrayList<ArrayList<Integer>>> region) throws IOException{
+								HashMap<String, String> reference_genotype) throws IOException{
 		
 		for(String vcf:list){
 			System.out.print("\nRead "+vcf+"\n");
@@ -47,7 +46,6 @@ public class VCF{
 			ArrayList<Double> dbsnp = new ArrayList<Double>();
 			ArrayList<Double> number_of_rows = new ArrayList<Double>();
 			ArrayList<ArrayList<Double>> het_freq = new ArrayList<ArrayList<Double>>();
-			string_split = "-";
 			
 			/**-------------------------------------**/
 			/**Parse vcf file**/
@@ -68,32 +66,26 @@ public class VCF{
 				row_count++;
 				if((row_count % 5000) == 0)	System.out.print("Processing row: "+row_count+"\n");
 				
-				/** header:**/
 				if(row.startsWith("##"))	continue;
 				if(row.startsWith("#CHROM")){
 					String[] first_line = row.split("\t");
 					for(int i = 9;i<first_line.length;i++) names.add(first_line[i]);
 				}else{
-					
+
 					/**Parse Current VCF Line**/
 					current = get_line(row, true);
 					if(current.isEmpty()) continue;
-					
-					/** check if region is within consensus region **/
-					if(check_region(region,  current.get(CHR).get(0),  Integer.valueOf(current.get(POS).get(0))) == false) continue;
 					
 					/**Skip INDELS:**/
 					for(String e:current.get(REF)) if(	e.matches(".*[A-Za-z]{2,}.*") |
 														e.equals("-") |
 														e.equals("N") |
-														e.equals(".") |
-														e.contains("*")
+														e.equals(".")
 													) continue read;
 					for(String e:current.get(ALT)) if(	e.matches(".*[A-Za-z]{2,}.*") |
 														e.equals("-") |
 														e.equals("N")|
-														e.equals(".")|
-														e.contains("*")
+														e.equals(".")
 													) continue read;
 					
 					/**--------------------------------------------**/
@@ -117,17 +109,15 @@ public class VCF{
 					}
 							
 					/**Skip chromosomes:**/
-					if(	current.get(CHR).get(0).matches(".*[YXMMT].*") ) 	continue;
+					if(	current.get(CHR).get(0).matches(".*[YXMMT].*") ) continue;
 					
-					
-					/**Add Genotype Information:**/
+					/**Add Genotype Information to Hash:**/
 					String key = current.get(CHR).get(0)+"\t"+current.get(POS).get(0);
-					if(!genotypes.containsKey(key)){genotypes.put(key, new ArrayList<String>());
+					if(!genotypes.containsKey(key)) genotypes.put(key, new ArrayList<String>());
 					
-						/**Fill up Genotypes for individuals which were not present in earlier vcf file:**/
-						for(int j=0; j<(info.get(NAMES).size());j++)	{
-							genotypes.get(key).add(current.get(REF).get(0)+current.get(REF).get(0));
-						}
+					/**Fill up Genotypes for individuals which were not present in earlier vcf file:**/
+					for(int j=0; j<(info.get(NAMES).size()-genotypes.get(key).size());j++)	{
+						genotypes.get(key).add(current.get(REF).get(0)+current.get(REF).get(0));
 					}
 					
 					for(int i = 0;i<current.get(FORMAT_GT).size();i++){
@@ -211,18 +201,8 @@ public class VCF{
 							ref_ac = Integer.valueOf(current.get("DP4").get(0))+Integer.valueOf(current.get("DP4").get(1));
 							alt_ac = Integer.valueOf(current.get("DP4").get(2))+Integer.valueOf(current.get("DP4").get(3));
 						}else if(current.containsKey("FORMAT_AD")){
-							
-							if(current.get("FORMAT_AD").get((covered_individual_count-1)*2).equals(".")) continue;
-							//if(current.get("FORMAT_AD").get((covered_individual_count-1)*2).equals(".")) continue;
-							
 							ref_ac = Integer.valueOf(current.get("FORMAT_AD").get((covered_individual_count-1)*2));
 							alt_ac = Integer.valueOf(current.get("FORMAT_AD").get(((covered_individual_count-1)*2)+1));
-						}else if(current.containsKey("FORMAT_EC") & current.containsKey("FORMAT_DP")){
-							
-							if(current.get("FORMAT_EC").get((covered_individual_count-1)*2).equals(".")) continue;
-							
-							ref_ac = Integer.valueOf(current.get("FORMAT_DP").get((covered_individual_count-1)*2)) - Integer.valueOf(current.get("FORMAT_EC").get((covered_individual_count-1)*2));
-							alt_ac = Integer.valueOf(current.get("FORMAT_EC").get((covered_individual_count-1)*2));
 						}
 							
 						if(ref_ac + alt_ac >= 20){
@@ -385,8 +365,8 @@ public class VCF{
 		String[] format = null;
 		
 		line.put(CHR, new ArrayList<String>());
-		line.put(REF, new ArrayList<String>());
 		line.put(POS, new ArrayList<String>());
+		line.put(REF, new ArrayList<String>());
 		line.put(ALT, new ArrayList<String>());
 		line.put(GENOTYPE, new ArrayList<String>());
 		
@@ -434,14 +414,8 @@ public class VCF{
 				String[] ind = current[i].split(":");
 				
 				for(int j = 0;j<ind.length;j++) {
-					if(format[j].equals("AD") | format[j].equals("EC")){
-						if(ind[j].equals(".")){
-							ind[j] = "0,0";
-						}
-					}
 					for(String a:ind[j].split(",")) {
 						line.get("FORMAT_"+format[j]).add(a);
-						
 					}
 				}
 			}
@@ -459,62 +433,34 @@ public class VCF{
 		HashMap<String, String> already_seen_genotype = new HashMap<String, String>();
 		
 		/**Get Actual Genotype:**/
+		
 		if(string_split.equals("-")){
 			if(line.get(FORMAT_GT).get(0).contains("|")) string_split = "\\|";
 			else if(line.get(FORMAT_GT).get(0).contains("/")) string_split = "\\/";
 			else string_split = "";
 		}
 		
-		/**Get Actual Genotype:**/
 		for(String a:line.get(FORMAT_GT)){
-			
-			/**Get string split pattern: **/
-			if(a.matches(".*\\|.*")) string_split = "\\|";
-			else if (a.matches(".*\\/.*"))  string_split = "\\/";
-			else{
-				
-				/**In hemizygote chrX stat:**/
-				a = a+"|"+a;
-				string_split = "\\|";
-			}
 			
 			/**Just put in already known genotype:**/
 			if(already_seen_genotype.containsKey(a))	{
 				line.get(GENOTYPE).add(already_seen_genotype.get(a));
 				continue;
 			}
-
+			
 			List<String> tmp = new ArrayList<String>();
 			for(String e:a.split(string_split)){
 				if(e.equals("0")) tmp.add(line.get(REF).get(0));
-				else if(e.contains(".")) tmp.add(line.get(REF).get(0));//tmp.add(".");
+				else if(e.equals(".")) tmp.add(line.get(REF).get(0));
 				else tmp.add(line.get(ALT).get(Integer.valueOf(e)-1));
 			}
-
+			
 			Collections.sort(tmp);
 			already_seen_genotype.put(a, tmp.get(0)+tmp.get(1));
-			line.get(GENOTYPE).add(already_seen_genotype.get(a));			
+			line.get(GENOTYPE).add(already_seen_genotype.get(a));
 		}
 		return line;
 	}
-	
-	/** check if positon is within defined consensus region **/
-	Boolean check_region(HashMap<String, ArrayList<ArrayList<Integer>>> region, String chr, Integer pos){
-		
-		Boolean check=false;
-		// go through all regions in region:
-		if(region.containsKey(chr)){
-			for(ArrayList<Integer> this_region:region.get(chr)){
-				if (this_region.get(0) <= pos & this_region.get(1) >= pos){
-					check = true;
-					break;
-				}
-	
-			}
-		}
-		return check;
-	}
-	
 	void update_genotypes(	HashMap<String, ArrayList<String>> genotypes,
 							HashMap<String,ArrayList<String>> info,
 							HashMap<String, String> reference_genotype){
@@ -522,13 +468,13 @@ public class VCF{
 		int number_of_individuals = info.get("NAMES").size();
 		for(String id:genotypes.keySet()){
 			if(genotypes.get(id).size() != number_of_individuals){
+				
 				for(int i = genotypes.get(id).size(); i<number_of_individuals;i++){
 					genotypes.get(id).add(reference_genotype.get(id));
 				}
 			}
 		}
 	}
-	
 	double getMean(ArrayList<Double> data)
     {
         double sum = 0.0;
@@ -538,7 +484,6 @@ public class VCF{
             sum += a;
             return sum/size;
     }
-	
     double getVariance(ArrayList<Double> data)
     {
         ArrayList<Double> data_sqrt = new ArrayList<Double>();

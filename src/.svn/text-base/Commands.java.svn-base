@@ -1,0 +1,64 @@
+import java.util.ArrayList;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
+
+public class Commands{
+	public static String dir = null;
+	public static String out = null;
+	public static String pop = null;
+	public static String metric = "rare";
+	
+	public ArrayList<String> get_commands(String[] args) throws Exception{
+		try {
+		      Options opt = new Options();
+		      opt.addOption("d","dir", true, "Directory to vcf files");
+		      opt.addOption("p","pop",true,"1000Genomes background population");
+		      opt.addOption("o","out",true,"Name of output file");
+		      opt.addOption("m","metric",true,"Metric (Sensitive for 'rare' or 'common' variants. default == 'rare')");
+
+		      GnuParser parser = new GnuParser();
+		      CommandLine cl = parser.parse(opt, args);
+		      
+		      if(cl.hasOption('d')){dir = cl.getOptionValue('d');}
+		      else{
+			         HelpFormatter f = new HelpFormatter();
+			         f.printHelp("VCF2Similarity.jar", opt);
+			         System.exit(0);
+			      }	
+		      if(cl.hasOption('o')){out = cl.getOptionValue('o');}
+		      else{
+			         HelpFormatter f = new HelpFormatter();
+			         f.printHelp("VCF2Similarity.jar", opt);
+			         System.exit(0);
+			      }	
+		      
+		      /****/
+		      if(cl.hasOption('p')){pop = cl.getOptionValue('p');}
+		      if(cl.hasOption('m')){metric = cl.getOptionValue('m');}
+		      
+		      if(!metric.equals("rare") & !metric.equals("common")){
+		    	  		    	  
+		    	  HelpFormatter f = new HelpFormatter();
+			      f.printHelp("VCF2Similarity.jar", opt);
+			      
+		    	  throw new Exception("Metric "+metric+" is not an option.\n");
+		      }
+		      
+		}catch (ParseException e) {
+		      e.printStackTrace();
+		}
+		
+		ArrayList<String> ret = new ArrayList<String>();
+		ret.add(dir);
+		ret.add(pop);
+		ret.add(out);
+		ret.add(metric);
+		
+		return ret;
+	}
+}

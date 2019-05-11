@@ -168,13 +168,9 @@ index<-which(Ref==paste("#",population,sep=""))
 ####################################################################################
 #Change directory and execute Latex .tex file:
 	
-	tmp=strsplit(output,"/")	
-	out_dir=""
-	for(i in 1:(length(unlist(tmp))-1)){
-		out_dir=paste(out_dir,unlist(tmp)[i],"/",sep="")
-	}
-	
-		
+
+	out_dir=dirname(output)
+			
 	table_out=c()
 	for(t in 1:length(unlist(INFO[1,]))){	
 		table_out=cbind(table_out,c(	INFO[1:dim(INFO)[2]][2,t],
@@ -201,6 +197,6 @@ index<-which(Ref==paste("#",population,sep=""))
 					col.names=T,
 					quote=F
 				)
-	
-	system(paste("pdflatex --shell-escape --interaction=nonstopmode --interaction=batchmode -aux-directory=\"",out_dir,"\" -output-directory=\"",out_dir,"\" \"",sub(".pdf",".tex",output),"\"",sep=""))
+	#system(paste0('pdflatex  --shell-escape --interaction=nonstopmode --interaction=batchmode ', sub(".pdf",".tex",output)))
+	system(paste("pdflatex --shell-escape --interaction=nonstopmode --interaction=batchmode -output-directory=\"",out_dir,"\" \"",sub(".pdf",".tex",output),"\"",sep=""))
 	
